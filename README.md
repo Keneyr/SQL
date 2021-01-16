@@ -6,7 +6,7 @@ SQL原理及优化
 
 记笔记，写代码，做心得总结
 
-# P1&P2&P3 
+# P1&P2&P3&P4 
 
 **索引**是帮助MySQL高效获取数据的排好序的数据结构
 
@@ -46,13 +46,56 @@ MySql早期有尝试过二叉树数据结构，但是二叉树在最差的情况
 
 >结合具体的实践例子来看：
 
-Navicat Premium 软件
+Navicat Premium 软件 和MySQL安装参考blog：[](https://blog.csdn.net/ruthywei/article/details/78433074)
 
-存储引擎(形容表的)...
+**存储引擎(形容表的)...**
 
 ![](imgs/MyISAM存储引擎.png)
 
 ![](imgs/InnoDB存储引擎.png)
 
 所以我们可以来看看HashTable实现的结构是啥样的：
+
+![](imgs/hashTable.png)
+
+B+树和B树的区别：
+
+![](imgs/B树.png)
+
+# P5&P6
+
+MySQL有很多优化原则~
+
+**联合索引-索引最左前缀原理：**
+
+![](imgs/联合索引最左前缀.png)
+
+如下三条语句，哪个语句会走索引？
+
+![](imgs/联合索引查询.png)
+
+答案是第一条，从底层数据结构去考虑，因为age、position不是排好序的，在search的时候还是会全表扫描...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
