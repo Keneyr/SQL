@@ -12,6 +12,8 @@ SQL原理及优化
 
 记笔记，写代码，做心得总结
 
+这次MYSQL学习，真的让我明白了，为啥字符串/文件操作/树/链表/排序算法这么重要...
+
 ## P1&P2&P3&P4 
 
 **索引**是帮助MySQL高效获取数据的排好序的数据结构
@@ -123,7 +125,7 @@ DBMS：Data Base Management System，数据库管理系统，比如MySQL软件�
 
 ![](imgs/+.png)
 
-MySQL逻辑条件查询不多写了，太简单了，这里写一写模糊查询，(通配符)：
+MySQL逻辑条件查询不多写了，太简单了，这里写一写***模糊查询**，(通配符)：
 
 1、like
 
@@ -169,11 +171,110 @@ MySQL逻辑条件查询不多写了，太简单了，这里写一写模糊查询
 
 >SELECT last_name,commission_pct FROM emplyees WHERE salary <=> 12000;
 
+>查询员工职位不是IT的信息
+
+>SELECT \* FROM emplyees WHERE job_id <> 'IT'
+
 通配符：
 
 % 任意多个字符，包含0个字符
 
 _ 任意单个字符
+
+%% 不包含NULL
+
+**排序查询：**
+
+>查询员工信息，要求工资从高到低排序
+
+>SELECT \* FROM emplyees ORDER BY salary DESC;
+
+>查询部门编号>=90的员工信息，按入职时间先后进行排序
+
+>SELECT \* FROM emplyees WHERE department_id >= 90 ORDER BY hiredate ASC;
+
+>查询员工信息，要求先按工资升序，再按员工编号降序【多字段排序】
+
+>SELECT \* FROM emplyees ORDER BY salary ASC,emplyee_id DESC;
+
+**常见函数：**
+
+字符函数：
+
+LENGTH()/CONCAT()/UPPER()/LOWER()
+
+SUBSTR()-MySQL中索引是从1开始/INSTR()-返回索引
+
+trim()-去掉前后某些字符/lpad()-指定字符实现左填充指定长苏/REPLACE()
+
+>姓名中首字符大写，其他字符小写然后用_拼接，显示出来
+
+>SELECT CONCAT(UPPER(SUBSTR(last_name,1,1)),'_',LOWER(SUBSTR(last_name,2))) out_put FROM emplyees;
+
+数学函数：
+
+ROUND()-四舍五入/CEIL()-向上取整/FLOOR-向下取整
+
+TRUNCATE()-截断/MOD()-取余
+
+日期函数：
+
+NOW()/CURDATE()/CURTIME()/STR_TO_DATE()/
+
+流程控制函数：
+
+if()/case when then
+
+分组函数：
+
+SUM()/AVG()/MAX()/MIN()/COUNT()
+
+![](imgs/count.png)
+
+分组函数：
+
+>查询每个工种的最高工资
+
+>SELECT MAX(salary),job_id FROM emplyees GROUP BY job_id;
+
+>查询每个位置上的部门个数
+
+>SELECT COUNT(\*),location_id FROM departments GROUP BY location_id;
+
+>查询每个领导手下有奖金的员工的最高工资
+
+>SELECT MAX(salary),manager_id FROM emplyees WHERE commission_pct IS NOT NULL GROUP BY manager_id;
+
+>查询哪个部门的员工个数>2
+
+>SELECT COUNT(\*),department_id FROM emplyees GROUP BY department_id HAVING COUNT(\*)>2;
+
+**WHERE过滤行,在分组前执行，HAVING过滤分组后结果,在分组后执行**
+
+**分组函数做条件肯定放在HAVING字句中，WHERE是表中的字段**
+
+>查询每个工种有奖金的员工的最高工资>12000的工种编号和最高工资
+
+>SELECT MAX(salary),job_id FROM emplyees WHERE commission_pct IS NOT NULL GROUP BY job_id HAVING MAX(salary)>12000;
+
+>查询领导编号>102的每个领导手下的最低工资>5000的领导编号是哪个，以及其最低工资
+
+>SELECT MIN(salary),manager_id FROM emplyees WHERE manager_id>102 GROUP BY manager_id HAVING MIN(salary)>5000;
+
+>按员工姓名的长度分组，查询每一组的员工个数，筛选员工个数>5的有哪些
+
+>SELECT COUNT(\*),LENGTH(last_name) len_name FROM emplyees GROUP BY LENGTH(last_name) HAVING COUNT(*)>5;
+
+>查询每个部门每个工种的员工的平均工资
+
+>SELECT AVG(salary),department_id,job_id FROM emplyees GROUP BY job_id,department_id;
+
+>查询每个部门每个工种的员工平均工资大于10000的平均工资，并且按平均工资的高低显示
+
+>SELECT AVG(salary),department_id,job_id FROM emplyees WHERE department_id IS NOT NULL GROUP BY job_id,department_id HAVING AVG(salary)>10000 ORDER BY AVG(salary) DESC;
+
+
+
 
 事务是数据库操作的最小逻辑工作单元，是一系列SQL(structure query language)操作的集合.
 
