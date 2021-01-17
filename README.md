@@ -12,7 +12,7 @@ SQL原理及优化
 
 记笔记，写代码，做心得总结
 
-这次MYSQL学习，真的让我明白了，为啥字符串/文件操作/树/链表/排序算法这么重要...
+这次MYSQL学习，真的让我明白了，为啥字符串/文件操作/树/链表/排序算法这些基础知识这么重要...
 
 ## P1&P2&P3&P4 
 
@@ -97,6 +97,10 @@ MVCC主要是为了提高并发的读写性能，不用加锁就能让多个事�
 
 # 基础回笼
 
+这个有相关pdf，所以请查看pdf资源~没必要看我碎碎念(我也放弃碎碎念了)...因为婷姐的这个基础MySQL，给的资源实在是太到位了...
+
+## 概念
+
 DB：Daba base,数据库
 
 DBMS：Data Base Management System，数据库管理系统，比如MySQL软件，Oracle软件
@@ -124,6 +128,8 @@ DBMS：Data Base Management System，数据库管理系统，比如MySQL软件�
 但是在MYSQL中的+，是如下情况：
 
 ![](imgs/+.png)
+
+## 模糊查询
 
 MySQL逻辑条件查询不多写了，太简单了，这里写一写***模糊查询**，(通配符)：
 
@@ -183,7 +189,8 @@ _ 任意单个字符
 
 %% 不包含NULL
 
-**排序查询：**
+
+## 排序查询
 
 >查询员工信息，要求工资从高到低排序
 
@@ -231,7 +238,7 @@ SUM()/AVG()/MAX()/MIN()/COUNT()
 
 ![](imgs/count.png)
 
-分组函数：
+## 分组查询
 
 >查询每个工种的最高工资
 
@@ -273,8 +280,79 @@ SUM()/AVG()/MAX()/MIN()/COUNT()
 
 >SELECT AVG(salary),department_id,job_id FROM emplyees WHERE department_id IS NOT NULL GROUP BY job_id,department_id HAVING AVG(salary)>10000 ORDER BY AVG(salary) DESC;
 
+## 连接查询
+
+按功能分类：
+
+内连接：等值连接/非等值连接/自连接
+
+外连接：左外连接/右外连接/全外连接
+
+交叉连接：~
+
+等值连接
+
+>查询女神名和对应的男神名
+
+>SELECT NAME,boyName FROM boys,beauty WHERE beauty.boyfriend_id = boys.id;
+
+>查询员工名和对应的部门名
+
+>SELECT last_name,department_name FROM emplyees,departments WHERE department_id = departments.department_id;
+
+>查询有奖金的员工名、部门名
+
+>SELECT last_name,department_name,commission_pct FROM emplyees e,departments d WHERE e.department_id=d.department_id AND e.commission_pct IS NOT NULL;
+
+非等值连接
+
+>查询员工的工资和工资级别
+
+>SELECT salary,grade_level FROM emplyees e,job_grades g WHERE salary BETWEEN g.lowest_sal AND g.highest_sal;
+
+自连接
+
+>查询员工名和上级的名称
+
+>SELECT e.emplyee_id,e.last_name,m.emplyee_id,m.last_name FROM emplyees e,emplyees m WHERE e.manager_id=m.emplyee_id;
+
+或者
+
+>SELECT e.last_name,m.last_name FROM emplyees e JOIN emplyees m ON e.manager_id=m.emplyee_id;
+
+外连接-用于查询一个表中有，另一个表中没有的情况：
+
+外连接查询结果 = 内连接结果+主表中有而从表中没有的记录
+
+外连接的查询结果为主表中的所有记录，如果从表中有和它匹配的，则显示匹配的值；如果从表中没有和它匹配的，则显示null
+
+左外连接，left join 左边的是主表
+右外连接，right join 右边的是主表
+
+全外连接
+
+>USE girls;
+
+>SELECT b.\*,bo.\* FROM beauty b FULL OUTER JOIN boys bo ON b.boyfriend_id = bo.id;
+
+全外连接 = 内连接结果+表1中有但表2中没有+表2中有但表1中没有的
+
+交叉连接(笛卡尔乘积)
+
+![](imgs/连接查询1.png)
+![](imgs/连接查询2.png)
+
+## 子查询
+
+出现在其他语句中的select语句，成为子查询或内查询
+
+外部的查询语句，称为主查询或外查询
 
 
+
+
+
+## 事务
 
 事务是数据库操作的最小逻辑工作单元，是一系列SQL(structure query language)操作的集合.
 
@@ -285,6 +363,8 @@ SUM()/AVG()/MAX()/MIN()/COUNT()
 回滚(rollback transaction)：即在事务的运行过程中发生了某种故障，事务不能继续运行，影响该事务的SQL语句所造成的任何改变必须全部作废，回滚到事务开始前的状态。
 
 其实提交和回滚特别像svn操作中的commit和revert...
+
+## 锁
 
 并发操作的三类问题：
 
