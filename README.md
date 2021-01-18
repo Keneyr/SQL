@@ -54,7 +54,10 @@ MySql早期有尝试过二叉树数据结构，但是二叉树在最差的情况
 
 >结合具体的实践例子来看：
 
-Navicat Premium 软件 和MySQL安装参考blog：[](https://blog.csdn.net/ruthywei/article/details/78433074)
+Navicat Premium 软件 和MySQL安装参考blog：
+
+[](https://blog.csdn.net/ruthywei/article/details/78433074)
+[](https://www.jianshu.com/p/aca31d8f4c5b)
 
 **存储引擎(形容表的)...**
 
